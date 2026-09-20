@@ -353,13 +353,3 @@ Do **not** commit generated binaries or temporary files such as:
 ```
 
 A `.gitignore` file should be used to prevent these files from being committed.
-
-## Author
-
-**Hirantha Priyadarshana**
-
-## Assignment
-
-**Assignment 3 — Asteroids**
-
-C++ / Object-Oriented Programming
