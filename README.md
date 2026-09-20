@@ -21,9 +21,9 @@ The assignment requires game objects to be implemented using inheritance and pol
 
 ## Technologies
 
-- **C++**
+- **C++ (C++17)**
 - **PlayBuffer**
-- **Visual Studio 2022**
+- **VS Code + MSYS2 / MinGW (g++)** — also builds with **Visual Studio 2022**
 - Object-Oriented Programming
 - Inheritance
 - Abstract Classes
@@ -35,28 +35,32 @@ The assignment requires game objects to be implemented using inheritance and pol
 ## Project Structure
 
 ```text
-Asteroids/
+asteroids-cpp-playbuffer/
+│
+├── .vscode/                 # VS Code build/debug configuration
+│   ├── tasks.json           #   Build Asteroids / Run Asteroids tasks
+│   ├── launch.json          #   F5 debug configuration (gdb)
+│   ├── c_cpp_properties.json
+│   └── settings.json
 │
 ├── data/
 │   └── sprites/
 │       ├── asteroid.png
 │       └── ship.png
 │
-├── Asteroid.h
-├── Asteroid.cpp
-│
-├── Rigidbody.h
+├── Rigidbody.h              # Abstract base class
 ├── Rigidbody.cpp
-│
-├── Ship.h
+├── Asteroid.h               # : public Rigidbody
+├── Asteroid.cpp
+├── Ship.h                   # : public Rigidbody
 ├── Ship.cpp
+├── MainGame.cpp             # Entry / Update / Exit (only 3 functions)
 │
-├── MainGame.cpp
+├── Play.h                   # PlayBuffer framework (single header)
+├── Play.cpp                 # PlayBuffer implementation shim
 │
-├── Play.h
-├── Play.cpp
-│
-├── build.bat
+├── build.bat                # Command-line build (MSYS2/MinGW)
+├── .gitignore
 └── README.md
 ```
 
@@ -225,47 +229,72 @@ For example:
 
 This behaviour is implemented in the base `Rigidbody` physics simulation so that both the ship and asteroids can use it.
 
-## Building the Project
+## Getting Started (VS Code + MSYS2 — recommended)
 
-### Visual Studio 2022
+Follow these steps to build and run the game from source after cloning. No
+executable is committed to the repo — each developer builds their own `Asteroids.exe`.
+
+### 1. Prerequisites (one-time per machine)
+
+1. **MSYS2** — install from <https://www.msys2.org>. Then open the
+   **MSYS2 UCRT64** terminal and install the compiler (and gdb for debugging):
+
+   ```bash
+   pacman -S mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gdb
+   ```
+
+2. **Visual Studio Code** with the **C/C++ extension** (`ms-vscode.cpptools`).
+
+> The build expects the compiler at `C:\msys64\ucrt64\bin\g++.exe`.
+> If your MSYS2 is installed elsewhere, update that path in `build.bat` and in the
+> four `.vscode` files: `tasks.json`, `launch.json`, `settings.json`,
+> `c_cpp_properties.json`.
+
+### 2. Clone the repository
+
+```bash
+git clone <repository-url>
+```
+
+### 3. Open the project in VS Code
+
+Open the cloned repository folder in VS Code (File → Open Folder → select the
+project folder). All source files, the `.vscode` build tasks, and `data/sprites/`
+are at the root, so everything works out of the box.
+
+### 4. Build
+
+Press **Ctrl+Shift+B** (runs the **Build Asteroids** task). This compiles every
+`.cpp` file into `Asteroids.exe`.
+
+### 5. Run
+
+Use **Terminal → Run Task → Run Asteroids**, or type in the VS Code terminal:
+
+```bash
+./Asteroids.exe
+```
+
+### 6. Debug (optional)
+
+Press **F5** to build a debug version (`Asteroids_debug.exe`) and step through the
+code with breakpoints (requires gdb from the prerequisites).
+
+### Alternative: build from the command line
+
+Double-click **`build.bat`** (or run it from a terminal) to produce `Asteroids.exe`
+without VS Code.
+
+### Alternative: Visual Studio 2022
 
 1. Install **Visual Studio 2022** with the C++ development workload.
-2. Open/create a C++ project.
-3. Add the following source files:
+2. Create an **Empty C++ project** and add: `MainGame.cpp`, `Rigidbody.cpp/.h`,
+   `Ship.cpp/.h`, `Asteroid.cpp/.h`, `Play.cpp/.h`.
+3. Ensure `data/sprites/ship.png` and `data/sprites/asteroid.png` are present.
+4. Build and run (F5).
 
-```text
-MainGame.cpp
-Rigidbody.cpp
-Rigidbody.h
-Ship.cpp
-Ship.h
-Asteroid.cpp
-Asteroid.h
-Play.cpp
-Play.h
-```
-
-4. Make sure the following sprites are available:
-
-```text
-data/sprites/ship.png
-data/sprites/asteroid.png
-```
-
-5. Build the project.
-6. Run the application.
-
-### MinGW / MSYS2
-
-A `build.bat` file is also included for building the project with MinGW.
-
-The current batch file expects the compiler at:
-
-```text
-C:\msys64\ucrt64\bin\g++.exe
-```
-
-If MinGW is installed in another location, update the `GPP` path in `build.bat`.
+> Note: `Play.h` in this repo contains a one-line MinGW-compatibility fix. It still
+> builds cleanly under Visual Studio 2022.
 
 ## Controls
 
